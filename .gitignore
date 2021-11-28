@@ -1,0 +1,4 @@
+*.pdf
+*.o
+.DS_Store
+*.json
