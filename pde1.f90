@@ -275,7 +275,7 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
     test = 1
     allocate(p_estimate(nx*ny))
     p_estimate(:) = 0.0D+00
-    p_error = sqrt ( sum ( ( p_exact(:) - p_estimate(:) )**2 ) )
+    p_error = maxval ( abs ( ( p_exact(:) - p_estimate(:) )**2 ) )
 
     tol_abs = 1.0D-08
     tol_rel = 1.0D-08
@@ -293,11 +293,11 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
     deallocate(i_lhs, j_lhs, lhs, rhs)
 
     write(*, '(a,g14.6)') '  h^2 = ', dx**2
-    p_error = sqrt ( sum ( ( p_exact(:) - p_estimate(:) )**2 ) )
+    p_error = maxval ( abs ( ( p_exact(:) - p_estimate(:) )**2 ) )
     write ( *, '(a,g14.6)' ) '  Final P_ERROR = ', p_error
 
     rel_error = p_error / sqrt(sum(p_exact(:)**2))
-    write ( *, '(a,g14.6)' ) '  Relative P_ERROR = ', rel_error
+    ! write ( *, '(a,g14.6)' ) '  Relative P_ERROR = ', rel_error
 
     do i = 1, nx
         do j = 1, ny
