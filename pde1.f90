@@ -3,20 +3,23 @@ program main
     implicit none
 
     integer, parameter :: rk = kind ( 1.0D+00 )
-    integer nx, ny, nz_num
-    integer, parameter :: mr = 100
+    integer nx, ny, nz_num, mr
+    integer, parameter :: itr_max = 1
     real (kind = 8) dx, dy
     real (kind = 8), allocatable, dimension(:, :) :: a,b,c,s,p
     integer h, x_bd, y_bd
 
-    do h = 1, 6
+    do h = 1, 5
         nx = 10 * 2**h - 1
         ny = 10 * 2**h - 1
+        mr = min(nx*ny, 1000)
         nz_num = (3 * ny - 2) * (3 * nx - 2)
-        dx = 2/(10*2**h)
-        dy = 2/(10*2**h)
+        dx = real(2,8) / (10 * 2**h)
+        dy = real(2,8) / (10 * 2**h)
         x_bd = int(0.15 * nx)
         y_bd = int(0.0125/2 * ny)
+
+        ! write(*, '(/a,2g14.6)') 'dx & dy: ', dx, dy
 
         allocate(a(nx,ny), b(nx,ny), c(nx,ny), s(nx,ny), p(nx,ny))
 
@@ -26,7 +29,7 @@ program main
         a(1:x_bd,floor(real(ny)/2 - y_bd):ceiling(real(ny)/2 + y_bd)) = 1.1D+00
         s(1:nx,1:ny) = 1.0D+00
 
-        call pde_solver (a,b,c,s,nx,ny,nz_num,dx,dy,mr,p,x_bd,y_bd)
+        call pde_solver (a,b,c,s,nx,ny,nz_num,dx,dy,itr_max,mr,p,x_bd,y_bd)
 
         deallocate(a,b,c,s,p)
     end do
@@ -44,19 +47,19 @@ end
 !       -mr, the max number of inner iterations. 0 < mr <= nx*ny
 !   OUTPUT
 !       -p(nx,ny), numerical solution of pde in the matrix form.
-subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, mr, p, x_bd, y_bd)
+subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd, y_bd)
 
     implicit none
 
-    integer, intent(in) :: nx, ny, nz_num
+    integer, intent(in) :: nx, ny, nz_num, itr_max, mr, x_bd, y_bd
     real (kind = 8), intent(in) :: dx, dy
     real (kind = 8), intent(in), dimension(nx, ny) :: a, b, c, s
     real (kind = 8), intent(out), dimension(nx, ny) :: p
-    integer i, j, k, num, m, x_bd, y_bd
-    integer :: itr_max = 1
-    integer mr, exact_num
+    integer i, j, k, m
+    integer exact_num, num
     integer, allocatable :: i_lhs(:), j_lhs(:), i_raw(:), j_raw(:) ! indices of nonzero elements of the lhs matrix 
     real (kind = 8), allocatable :: lhs(:), lhs_raw(:) ! nonzero elements of the lhs matrix
+    real (kind = 8), allocatable, dimension(:,:) :: t, v, u ! submatrices in the k th row
     real (kind = 8), allocatable, dimension(:) :: rhs, p_estimate, p_exact
     integer test
     real ( kind = 8 ) tol_abs
@@ -66,7 +69,6 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, mr, p, x_bd, y_bd)
 !
 !  Set the matrix.
 !
-    real (kind = 8), allocatable, dimension(:,:) :: t, v, u
     allocate(t(nx,nx), v(nx,nx), u(nx,nx))
     allocate(lhs_raw(nz_num), i_raw(nz_num), j_raw(nz_num))
     num = 1 ! NUM counts the number of elements on the main diagonal, superdiagonal and subdiagonal.
@@ -218,22 +220,9 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, mr, p, x_bd, y_bd)
             end if
 
         end do
-        ! lhs_m((k-1)*nx+1:k*nx,(k-1)*nx+1:k*nx) = t
-        ! if (k /= ny) then
-        !     lhs_m((k-1)*nx+1:k*nx, k*nx+1:(k+1)*nx) = u
-        ! end if
-        ! if (k /= 1) then
-        !     lhs_m((k-1)*nx+1:k*nx, (k-2)*nx+1:(k-1)*nx) = v
-        ! end if
-
     end do
 
     deallocate(u,v,t)
-
-    ! write ( *, '(a)' ) '  Finished setting matrix. '
-    ! do i = 1 , nx
-    !     write(*, '(i8,g14.6/)') i,lhs_m(i,i+2*nx)
-    ! end do
 
 !
 !  Use compressed row storage for the LHS matrix.
@@ -292,10 +281,10 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, mr, p, x_bd, y_bd)
     tol_rel = 1.0D-08
 
     write ( *, '(a)' ) ' '
-    write ( *, '(a,i8)' ) '  Test ', test
-    write ( *, '(a,i8)' ) '  Matrix order N = ', nx*ny
-    write ( *, '(a,i8)' ) '  Inner iteration limit = ', mr
-    write ( *, '(a,i8)' ) '  Outer iteration limit = ', itr_max
+    ! write ( *, '(a,i8)' ) '  Test ', test
+    ! write ( *, '(a,i8)' ) '  Matrix order N = ', nx*ny
+    ! write ( *, '(a,i8)' ) '  Inner iteration limit = ', mr
+    ! write ( *, '(a,i8)' ) '  Outer iteration limit = ', itr_max
     write ( *, '(a,g14.6)' ) '  Initial P_ERROR = ', p_error
 
     call mgmres_st ( nx*ny, exact_num, i_lhs, j_lhs, lhs, p_estimate, rhs, itr_max, mr, &
@@ -303,6 +292,7 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, mr, p, x_bd, y_bd)
 
     deallocate(i_lhs, j_lhs, lhs, rhs)
 
+    write(*, '(a,g14.6)') '  h^2 = ', dx**2
     p_error = sqrt ( sum ( ( p_exact(:) - p_estimate(:) )**2 ) )
     write ( *, '(a,g14.6)' ) '  Final P_ERROR = ', p_error
 

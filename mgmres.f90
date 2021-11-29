@@ -872,9 +872,9 @@ subroutine mgmres_st ( n, nz_num, ia, ja, a, x, rhs, itr_max, mr, tol_abs, &
 
       itr_used = itr_used + 1
 
-      if ( verbose ) then
-        write ( *, '(a,i8,a,g14.6)' ) '  K =   ', k, '  Residual = ', rho
-      end if
+      ! if ( verbose ) then
+      !   write ( *, '(a,i8,a,g14.6)' ) '  K =   ', k, '  Residual = ', rho
+      ! end if
 
       if ( rho <= rho_tol .and. rho <= tol_abs ) then
         exit
