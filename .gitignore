@@ -4,4 +4,3 @@
 *.json
 soc.f90
 test_lapack.f90
-.gitignore
