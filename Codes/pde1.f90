@@ -303,17 +303,17 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
         end do
     end do
 
-    write(*, '(a)') 'p_estimate: '
+    write(*, '(a)') 'p_error: '
     do j = 1, ny
         do i = 1, nx
-            write(*, '(f10.2)', advance = 'no') p_estimate((j-1)*nx+i)
+            write(*, '(f9.2)', advance = 'no') abs(p_estimate((j-1)*nx+i) - p_exact((j-1)*nx+i))
         end do
         write(*, '(a)') ' '
     end do
     write(*, '(a)') 'p_exact: '
     do j = 1, ny
         do i = 1, nx
-            write(*, '(f10.2)', advance = 'no') p_exact((j-1)*nx+i)
+            write(*, '(f9.2)', advance = 'no') p_exact((j-1)*nx+i)
         end do
         write(*, '(a)') ' '
     end do
