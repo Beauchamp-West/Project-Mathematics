@@ -12,7 +12,7 @@ program main
     tol_abs = 1.0D-08
     tol_rel = 1.0D-08
 
-    do h = 1, 3
+    do h = 1, 5
         nx = 10 * 2**h - 1
         ny = 10 * 2**h - 1
         mr = min(nx*ny, 1000)
@@ -137,6 +137,9 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
             ! v(i+1,i) = (b(i+1,k) + (b(i+1,k-1) + b(i,k)) / 2) / (4*dx*dy)
         end do
 
+!
+!  Use compressed row storage for the LHS matrix.
+!
         do m = 1, nx
             i = (k-1) * nx + m
             i_raw(num) = i
@@ -229,7 +232,7 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
     deallocate(u,v,t)
 
 !
-!  Use compressed row storage for the LHS matrix.
+!  Eliminate the remaining zeros of the preliminary compressed LHS matrix.
 !
 
     allocate(lhs(exact_num),i_lhs(exact_num), j_lhs(exact_num))
@@ -303,20 +306,20 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
         end do
     end do
 
-    write(*, '(a)') 'p_error: '
-    do j = 1, ny
-        do i = 1, nx
-            write(*, '(f9.2)', advance = 'no') abs(p_estimate((j-1)*nx+i) - p_exact((j-1)*nx+i))
-        end do
-        write(*, '(a)') ' '
-    end do
-    write(*, '(a)') 'p_exact: '
-    do j = 1, ny
-        do i = 1, nx
-            write(*, '(f9.2)', advance = 'no') p_exact((j-1)*nx+i)
-        end do
-        write(*, '(a)') ' '
-    end do
+    ! write(*, '(a)') 'p_error: '
+    ! do j = 1, ny
+    !     do i = 1, nx
+    !         write(*, '(f9.2)', advance = 'no') abs(p_estimate((j-1)*nx+i) - p_exact((j-1)*nx+i))
+    !     end do
+    !     write(*, '(a)') ' '
+    ! end do
+    ! write(*, '(a)') 'p_exact: '
+    ! do j = 1, ny
+    !     do i = 1, nx
+    !         write(*, '(f9.2)', advance = 'no') p_exact((j-1)*nx+i)
+    !     end do
+    !     write(*, '(a)') ' '
+    ! end do
     deallocate(p_exact, p_estimate)
 
     return
