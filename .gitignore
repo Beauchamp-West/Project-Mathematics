@@ -1,6 +1,6 @@
 *.pdf
-*.o
 .DS_Store
 *.json
 soc.f90
 test_lapack.f90
+mgmres_test.*
