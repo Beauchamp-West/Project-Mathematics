@@ -1,50 +1,50 @@
  
   Initial P_ERROR =    1.00000    
-  ITR =        1  Residual =    6.34090    
+  ITR =        1  Residual =    5.51039    
  
 MGMRES_ST:
-  Iterations =       80
-  Final residual =   0.814821E-08
+  Iterations =       36
+  Final residual =   0.616940E-08
   h^2 =       0.10E-01
-  Final P_ERROR =   0.247870    
+  Final P_ERROR =   0.170767    
 
  
   Initial P_ERROR =    1.00000    
-  ITR =        1  Residual =    12.1797    
+  ITR =        1  Residual =    11.1076    
  
 MGMRES_ST:
-  Iterations =      155
-  Final residual =   0.879411E-08
+  Iterations =       74
+  Final residual =   0.721575E-08
   h^2 =       0.25E-02
-  Final P_ERROR =   0.225432    
+  Final P_ERROR =   0.916972E-01
 
  
   Initial P_ERROR =    1.00000    
-  ITR =        1  Residual =    23.5001    
+  ITR =        1  Residual =    22.2966    
  
 MGMRES_ST:
-  Iterations =      292
-  Final residual =   0.946283E-08
+  Iterations =      142
+  Final residual =   0.916724E-08
   h^2 =       0.63E-03
-  Final P_ERROR =   0.183199    
+  Final P_ERROR =   0.477802E-01
 
  
   Initial P_ERROR =    1.00000    
-  ITR =        1  Residual =    45.9449    
+  ITR =        1  Residual =    44.6720    
  
 MGMRES_ST:
-  Iterations =      615
-  Final residual =   0.970086E-08
+  Iterations =      280
+  Final residual =   0.930707E-08
   h^2 =       0.16E-03
-  Final P_ERROR =   0.133550    
+  Final P_ERROR =   0.244257E-01
 
  
   Initial P_ERROR =    1.00000    
-  ITR =        1  Residual =    93.2922    
+  ITR =        1  Residual =    89.4216    
  
 MGMRES_ST:
-  Iterations =     1000
-  Final residual =   0.301473E-05
+  Iterations =      570
+  Final residual =   0.972751E-08
   h^2 =       0.39E-04
-  Final P_ERROR =   0.139853    
+  Final P_ERROR =   0.123539E-01
 

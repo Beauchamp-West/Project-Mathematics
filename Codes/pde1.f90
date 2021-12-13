@@ -29,7 +29,7 @@ program main
         a(1:nx,1:ny) = 0.1D+00
         b(1:nx,1:ny) = 0.0D+00
         c(1:nx,1:ny) = 0.1D+00
-        a(1:x_bd,floor(real(ny)/2 - y_bd):ceiling(real(ny)/2 + y_bd)) = 1.1D+00
+        ! a(1:x_bd,floor(real(ny)/2 - y_bd):ceiling(real(ny)/2 + y_bd)) = 1.1D+00
         s(1:nx,1:ny) = 1.0D+00
 
         call pde_solver (a,b,c,s,nx,ny,nz_num,dx,dy,itr_max,mr,p,x_bd,y_bd,tol_abs,tol_rel)
@@ -272,13 +272,13 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
         rhs(i+1) = (x**2 - 2 * x + y**2 - 1) / 5
     end do
 
-    do i = 1, x_bd
-        do j = ny/2 - y_bd, ny/2 + y_bd
-            x = i * dx
-            y = j * dy - 1
-            rhs(j*nx+i) = (x**2 - 2 * x + 11 * y**2 - 11) / 5
-        end do
-    end do
+    ! do i = 1, x_bd
+    !     do j = ny/2 - y_bd, ny/2 + y_bd
+    !         x = i * dx
+    !         y = j * dy - 1
+    !         rhs(j*nx+i) = (x**2 - 2 * x + 11 * y**2 - 11) / 5
+    !     end do
+    ! end do
 
 !
 !  Set the initial solution estimate.
