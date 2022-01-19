@@ -12,6 +12,7 @@ program main
     tol_rel = 1.0D-08
 
     ! write ( *, '(a)' ) 'test'
+    open(1, file='task1.txt')
 
     do h = 1, 3
         nx = 10 * 2**h - 1
@@ -47,13 +48,14 @@ program main
 
         call pde_solver (a,b,c,s,nx,ny,nz_num,dx,dy,itr_max,mr,p,tol_abs,tol_rel)
 
-        write(*, '(a,g14.2)') '  h = ', dx
+        write(1, '(a,g14.2)') '  h = ', dx
         p_error = maxval(abs(p_exact - p))
-        write ( *, '(a,g14.6/)' ) '  Final P_ERROR = ', p_error
+        write (1, '(a,g14.6/)' ) '  Final P_ERROR = ', p_error
 
         deallocate(a,b,c,s,p,p_exact,rhs)
     end do
 
+    close(1)
 end
 
 ! PDE_SOLVER solves the pde in the first task numerically using GMRES method.

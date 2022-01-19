@@ -14,7 +14,8 @@ fi
 rm task1.o
 #
 mv a.out task1
-./task1 > task.txt
+# ./task1 > task1.txt
+./task1
 if [ $? -ne 0 ]; then
   echo "Run error."
   exit

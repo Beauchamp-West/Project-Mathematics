@@ -1,0 +1,9 @@
+  h =       0.10    
+  Final P_ERROR =   0.170767    
+
+  h =       0.50E-01
+  Final P_ERROR =   0.916972E-01
+
+  h =       0.25E-01
+  Final P_ERROR =   0.477802E-01
+
