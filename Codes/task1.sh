@@ -1,24 +1,24 @@
 #! /bin/bash
 #
-gfortran -c -Wall pde1.f90
+gfortran -c -Wall task1.f90
 if [ $? -ne 0 ]; then
   echo "Compile error."
   exit
 fi
 #
-gfortran pde1.o mgmres.o
+gfortran task1.o mgmres.o
 if [ $? -ne 0 ]; then
   echo "Load error."
   exit
 fi
-rm pde1.o
+rm task1.o
 #
-mv a.out pde1
-./pde1 > pde1.txt
+mv a.out task1
+./task1 > task.txt
 if [ $? -ne 0 ]; then
   echo "Run error."
   exit
 fi
-rm pde1
+rm task1
 #
 echo "Normal end of execution."

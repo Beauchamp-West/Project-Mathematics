@@ -12,7 +12,7 @@ program main
     tol_abs = 1.0D-08
     tol_rel = 1.0D-08
 
-    do h = 1, 5
+    do h = 1, 1
         nx = 10 * 2**h - 1
         ny = 10 * 2**h - 1
         mr = min(nx*ny, 1000)
@@ -32,7 +32,7 @@ program main
         ! a(1:x_bd,floor(real(ny)/2 - y_bd):ceiling(real(ny)/2 + y_bd)) = 1.1D+00
         s(1:nx,1:ny) = 1.0D+00
 
-        call pde_solver (a,b,c,s,nx,ny,nz_num,dx,dy,itr_max,mr,p,x_bd,y_bd,tol_abs,tol_rel)
+        call pde_solver (a,b,c,s,nx,ny,nz_num,dx,dy,itr_max,mr,p,tol_abs,tol_rel)
 
         deallocate(a,b,c,s,p)
     end do
@@ -49,15 +49,14 @@ end
 !       -dx, dy, mesh size in x and y coordinate.
 !       -mr, the max number of inner iterations. 0 < mr <= nx*ny
 !       -itr_max, the max number of outer iterations.
-!       -x_bd, y_bd, support of m in the exact example from 5.4.
 !       -tol_abs, tol_rel, absolute and relative tolerance.
 !   OUTPUT
 !       -p(nx,ny), numerical solution of pde in the matrix form.
-subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd, y_bd, tol_abs, tol_rel)
+subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, tol_abs, tol_rel)
 
     implicit none
 
-    integer, intent(in) :: nx, ny, nz_num, itr_max, mr, x_bd, y_bd
+    integer, intent(in) :: nx, ny, nz_num, itr_max, mr
     real (kind = 8), intent(in) :: dx, dy, tol_abs, tol_rel
     real (kind = 8), intent(in), dimension(nx, ny) :: a, b, c, s
     real (kind = 8), intent(out), dimension(nx, ny) :: p
@@ -136,6 +135,7 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
             ! v(i,i+1) = -1 * (b(i,k) + (b(i+1,k) + b(i,k-1)) / 2) / (4*dx*dy)
             ! v(i+1,i) = (b(i+1,k) + (b(i+1,k-1) + b(i,k)) / 2) / (4*dx*dy)
         end do
+
 
 !
 !  Use compressed row storage for the LHS matrix.
@@ -229,6 +229,13 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
         end do
     end do
 
+    ! do k = 1, nx
+    !     do j = 1,nx
+    !     write ( *, '(g10.2x)',advance = 'no' ) t(k,j)
+    !     end do
+    !     write (*, '(/)')
+    ! end do
+
     deallocate(u,v,t)
 
 !
@@ -296,9 +303,9 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
 
     deallocate(i_lhs, j_lhs, lhs, rhs)
 
-    write(*, '(a,g14.2)') '  h^2 = ', dx**2
-    p_error = maxval (abs ( p_exact(:) - p_estimate(:) ) )
-    write ( *, '(a,g14.6/)' ) '  Final P_ERROR = ', p_error
+    ! write(*, '(a,g14.2)') '  h^2 = ', dx**2
+    ! p_error = maxval (abs ( p_exact(:) - p_estimate(:) ) )
+    ! write ( *, '(a,g14.6/)' ) '  Final P_ERROR = ', p_error
 
     do i = 1, nx
         do j = 1, ny
@@ -306,20 +313,20 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, x_bd,
         end do
     end do
 
-    ! write(*, '(a)') 'p_error: '
-    ! do j = 1, ny
-    !     do i = 1, nx
-    !         write(*, '(f9.2)', advance = 'no') abs(p_estimate((j-1)*nx+i) - p_exact((j-1)*nx+i))
-    !     end do
-    !     write(*, '(a)') ' '
-    ! end do
-    ! write(*, '(a)') 'p_exact: '
-    ! do j = 1, ny
-    !     do i = 1, nx
-    !         write(*, '(f9.2)', advance = 'no') p_exact((j-1)*nx+i)
-    !     end do
-    !     write(*, '(a)') ' '
-    ! end do
+    write(*, '(a)') 'p_error: '
+    do j = 1, ny
+        do i = 1, nx
+            write(*, '(f9.2)', advance = 'no') abs(p_estimate((j-1)*nx+i) - p_exact((j-1)*nx+i))
+        end do
+        write(*, '(a)') ' '
+    end do
+    write(*, '(a)') 'p_exact: '
+    do j = 1, ny
+        do i = 1, nx
+            write(*, '(f9.2)', advance = 'no') p_exact((j-1)*nx+i)
+        end do
+        write(*, '(a)') ' '
+    end do
     deallocate(p_exact, p_estimate)
 
     return
