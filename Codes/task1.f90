@@ -58,6 +58,8 @@ program main
     close(1)
 end
 
+subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, tol_abs, tol_rel)
+
 ! PDE_SOLVER solves the pde in the first task numerically using GMRES method.
 !
 ! Parameters
@@ -71,8 +73,7 @@ end
 !       -tol_abs, tol_rel, absolute and relative tolerance.
 !   OUTPUT
 !       -p(nx*ny), numerical solution of pde in the matrix form.
-subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, tol_abs, tol_rel)
-
+    
     implicit none
 
     integer, intent(in) :: nx, ny, nz_num, itr_max, mr
@@ -183,6 +184,8 @@ subroutine pde_solver (a, b, c, s, nx, ny, nz_num, dx, dy, itr_max, mr, p, tol_a
     return
 end subroutine
 
+subroutine add_zeros(a,x,y,b)
+
 ! ADD_ZEROS add zeros around the matrix.
 !
 ! Parameters
@@ -193,7 +196,6 @@ end subroutine
 
 !     -OUTPUT
 !         b(x+1,y+1), the matrix after adding edges.
-subroutine add_zeros(a,x,y,b)
 
     implicit none
     integer :: x, y, i
