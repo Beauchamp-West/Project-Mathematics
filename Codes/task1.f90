@@ -14,7 +14,7 @@ program main
     ! write ( *, '(a)' ) 'test'
     open(1, file='task1.txt')
 
-    do h = 1, 3
+    do h = 1, 5
         nx = 10 * 2**h - 1
         ny = 10 * 2**h - 1
         mr = min(nx*ny, 1000)

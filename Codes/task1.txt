@@ -7,3 +7,9 @@
   h =       0.25E-01
   Final P_ERROR =   0.477802E-01
 
+  h =       0.13E-01
+  Final P_ERROR =   0.244257E-01
+
+  h =       0.63E-02
+  Final P_ERROR =   0.123539E-01
+
